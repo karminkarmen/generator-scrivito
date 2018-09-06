@@ -7,70 +7,29 @@ module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
     this.log("Hello in scrivito Obj/Widgets generator!");
+    this.option("obj", { type: String });
+    this.option("widget", { type: String });
   }
   start() {
-    this.prompt({
-      type: "list",
-      name: "type",
-      message: "Choose which one template you want to create: ",
-      choices: ["Generate a new Obj", "Generate a new Widget"]
-    }).then(answers => {
-      if (answers.type === "Generate a new Widget") {
-        this.prompt({
-          type: "input",
-          name: "nameWidget",
-          message: "Enter a name of the Widget: "
-        }).then(answers => {
-          const defaultName = this._creatingName(answers.nameWidget);
-          const defNameUpper = this._creatingUpperName(defaultName);
-          this.destinationRoot(defNameUpper);
-          const defNameUpperWidget = defNameUpper + "Widget";
-          this._writeWidgetComponent(
-            defaultName,
-            defNameUpper,
-            defNameUpperWidget
-          );
-          this._writeWidgetConfig(
-            defaultName,
-            defNameUpper,
-            defNameUpperWidget
-          );
-          this._writeWidgetClass(defaultName, defNameUpper, defNameUpperWidget);
-        });
-      } else {
-        this.prompt([
-          {
-            type: "input",
-            name: "nameObj",
-            message: "Enter a name of the Obj: "
-          },
-          {
-            type: "list",
-            name: "type",
-            message: "Choose which one template you want to create: ",
-            choices: [
-              "Generate an Obj with a react component (default)",
-              "Generate an Obj without a react component (e.g. like a download)"
-            ]
-          }
-        ]).then(answers => {
-          const defaultName = this._creatingName(answers.nameObj);
-          const defNameUpper = this._creatingUpperName(defaultName);
-          this.destinationRoot(defNameUpper);
-
-          switch (answers.type) {
-            case "Generate an Obj with a react component (default)":
-              this._writeObjComponent(defaultName, defNameUpper);
-              this._writeObjConfig(defaultName, defNameUpper);
-              this._writeObjClass(defaultName, defNameUpper);
-
-            case "Generate an Obj without a react component (e.g. like a download)":
-              this._writeObjConfig(defaultName, defNameUpper);
-              this._writeObjClass(defaultName, defNameUpper);
-          }
-        });
-      }
-    });
+    if (this.options.obj) {
+      this._creatingObj();
+    } else if (this.options.widget) {
+      this._creatingWidget();
+    } else if (!this.options.obj || !this.options.widget) {
+      this.prompt({
+        type: "list",
+        name: "type",
+        message: "Choose which one template you want to create: ",
+        choices: ["Generate a new Obj", "Generate a new Widget"]
+      }).then(answers => {
+        if (answers.type === "Generate a new Widget") {
+          this._creatingWidget();
+        }
+        if (answers.type === "Generate a new Obj") {
+          this._creatingObj();
+        }
+      });
+    }
   }
 
   _creatingName(name) {
@@ -81,6 +40,56 @@ module.exports = class extends Generator {
   _creatingUpperName(name) {
     const defNameUpper = name.charAt(0).toUpperCase() + name.slice(1);
     return defNameUpper;
+  }
+
+  _creatingObj() {
+    this.prompt([
+      {
+        type: "input",
+        name: "nameObj",
+        message: "Enter a name of the Obj: "
+      },
+      {
+        type: "list",
+        name: "type",
+        message: "Choose which one template you want to create: ",
+        choices: [
+          "Generate an Obj with a react component (default)",
+          "Generate an Obj without a react component (e.g. like a download)"
+        ]
+      }
+    ]).then(answers => {
+      const defaultName = this._creatingName(answers.nameObj);
+      const defNameUpper = this._creatingUpperName(defaultName);
+      this.destinationRoot(defNameUpper);
+
+      switch (answers.type) {
+        case "Generate an Obj with a react component (default)":
+          this._writeObjComponent(defaultName, defNameUpper);
+          this._writeObjConfig(defaultName, defNameUpper);
+          this._writeObjClass(defaultName, defNameUpper);
+
+        case "Generate an Obj without a react component (e.g. like a download)":
+          this._writeObjConfig(defaultName, defNameUpper);
+          this._writeObjClass(defaultName, defNameUpper);
+      }
+    });
+  }
+
+  _creatingWidget() {
+    this.prompt({
+      type: "input",
+      name: "nameWidget",
+      message: "Enter a name of the Widget: "
+    }).then(answers => {
+      const defaultName = this._creatingName(answers.nameWidget);
+      const defNameUpper = this._creatingUpperName(defaultName);
+      this.destinationRoot(defNameUpper);
+      const defNameUpperWidget = defNameUpper + "Widget";
+      this._writeWidgetComponent(defaultName, defNameUpper, defNameUpperWidget);
+      this._writeWidgetConfig(defaultName, defNameUpper, defNameUpperWidget);
+      this._writeWidgetClass(defaultName, defNameUpper, defNameUpperWidget);
+    });
   }
 
   // objects
