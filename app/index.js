@@ -9,25 +9,22 @@ module.exports = class extends Generator {
     this.log("Hello in scrivito Obj/Widgets generator!");
   }
   start() {
-    this.prompt(prompts).then(answers => {
-      const defaultName = answers.name;
-      const defNameUpper =
-        defaultName.charAt(0).toUpperCase() + defaultName.slice(1);
-      const defNameUpperWidget = defNameUpper + "Widget";
-
-      this.destinationRoot(defNameUpper);
-
-      switch (answers.type) {
-        case "An obj with a React Component":
-          this._writeObjComponent(defaultName, defNameUpper);
-          this._writeObjConfig(defaultName, defNameUpper);
-          this._writeObjClass(defaultName, defNameUpper);
-
-        case "An obj without a React Component":
-          this._writeObjConfig(defaultName, defNameUpper);
-          this._writeObjClass(defaultName, defNameUpper);
-
-        case "A widget with a React Component":
+    this.prompt({
+      type: "list",
+      name: "type",
+      message: "Choose which one template you want to create: ",
+      choices: ["Generate a new Obj", "Generate a new Widget"]
+    }).then(answers => {
+      if (answers.type === "Generate a new Widget") {
+        this.prompt({
+          type: "input",
+          name: "nameWidget",
+          message: "Enter a name of the Widget: "
+        }).then(answers => {
+          const defaultName = this._creatingName(answers.nameWidget);
+          const defNameUpper = this._creatingUpperName(defaultName);
+          this.destinationRoot(defNameUpper);
+          const defNameUpperWidget = defNameUpper + "Widget";
           this._writeWidgetComponent(
             defaultName,
             defNameUpper,
@@ -39,10 +36,51 @@ module.exports = class extends Generator {
             defNameUpperWidget
           );
           this._writeWidgetClass(defaultName, defNameUpper, defNameUpperWidget);
-      }
+        });
+      } else {
+        this.prompt([
+          {
+            type: "input",
+            name: "nameObj",
+            message: "Enter a name of the Obj: "
+          },
+          {
+            type: "list",
+            name: "type",
+            message: "Choose which one template you want to create: ",
+            choices: [
+              "Generate an Obj with a react component (default)",
+              "Generate an Obj without a react component (e.g. like a download)"
+            ]
+          }
+        ]).then(answers => {
+          const defaultName = this._creatingName(answers.nameObj);
+          const defNameUpper = this._creatingUpperName(defaultName);
+          this.destinationRoot(defNameUpper);
 
-      this.log("You've created");
+          switch (answers.type) {
+            case "Generate an Obj with a react component (default)":
+              this._writeObjComponent(defaultName, defNameUpper);
+              this._writeObjConfig(defaultName, defNameUpper);
+              this._writeObjClass(defaultName, defNameUpper);
+
+            case "Generate an Obj without a react component (e.g. like a download)":
+              this._writeObjConfig(defaultName, defNameUpper);
+              this._writeObjClass(defaultName, defNameUpper);
+          }
+        });
+      }
     });
+  }
+
+  _creatingName(name) {
+    const defaultName = name;
+    return defaultName;
+  }
+
+  _creatingUpperName(name) {
+    const defNameUpper = name.charAt(0).toUpperCase() + name.slice(1);
+    return defNameUpper;
   }
 
   // objects

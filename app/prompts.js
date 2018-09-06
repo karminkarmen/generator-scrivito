@@ -2,18 +2,17 @@
 
 module.exports = [
   {
-    type: "input",
-    name: "name",
-    message: "Enter a name of the Obj/Widget: "
-  },
-  {
     type: "list",
     name: "type",
     message: "Choose which one template you want to create: ",
-    choices: [
-      "An obj with a React Component",
-      "An obj without a React Component",
-      "A widget with a React Component"
-    ]
+    choices: ["Generate a new Obj", "Generate a new Widget"]
   }
 ];
+
+function createObj(answers) {
+  return {
+    type: "input",
+    name: "nameObj",
+    message: "Enter a name of the Obj: "
+  };
+}
