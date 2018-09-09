@@ -1,7 +1,6 @@
 "use strict";
 
 const Generator = require("yeoman-generator");
-const prompts = require("./prompts");
 
 module.exports = class extends Generator {
   constructor(args, opts) {
@@ -66,12 +65,12 @@ module.exports = class extends Generator {
       switch (answers.type) {
         case "Generate an Obj with a react component (default)":
           this._writeObjComponent(defaultName, defNameUpper);
-          this._writeObjConfig(defaultName, defNameUpper);
-          this._writeObjClass(defaultName, defNameUpper);
+          this._writeXObjConfig(defaultName, defNameUpper);
+          this._writeXObjClass(defaultName, defNameUpper);
 
         case "Generate an Obj without a react component (e.g. like a download)":
-          this._writeObjConfig(defaultName, defNameUpper);
-          this._writeObjClass(defaultName, defNameUpper);
+          this._writeYObjConfig(defaultName, defNameUpper);
+          this._writeYObjClass(defaultName, defNameUpper);
       }
     });
   }
@@ -96,23 +95,39 @@ module.exports = class extends Generator {
 
   _writeObjComponent(defaultName, defNameUpper) {
     this.fs.copyTpl(
-      this.templatePath("component.js"),
+      this.templatePath("XObjcomponent.js"),
       this.destinationPath(defNameUpper + "Component" + ".js"),
       { name: defaultName, nameUpper: defNameUpper }
     );
   }
 
-  _writeObjConfig(defaultName, defNameUpper) {
+  _writeXObjConfig(defaultName, defNameUpper) {
     this.fs.copyTpl(
-      this.templatePath("editingConfig.js"),
+      this.templatePath("XEditingConfig.js"),
       this.destinationPath(defNameUpper + "EditingConfig" + ".js"),
       { name: defaultName, nameUpper: defNameUpper }
     );
   }
 
-  _writeObjClass(defaultName, defNameUpper) {
+  _writeYObjConfig(defaultName, defNameUpper) {
     this.fs.copyTpl(
-      this.templatePath("objClass.js"),
+      this.templatePath("YEditingConfig.js"),
+      this.destinationPath(defNameUpper + "EditingConfig" + ".js"),
+      { name: defaultName, nameUpper: defNameUpper }
+    );
+  }
+
+  _writeXObjClass(defaultName, defNameUpper) {
+    this.fs.copyTpl(
+      this.templatePath("XObjClass.js"),
+      this.destinationPath(defNameUpper + "ObjClass" + ".js"),
+      { name: defaultName, nameUpper: defNameUpper }
+    );
+  }
+
+  _writeYObjClass(defaultName, defNameUpper) {
+    this.fs.copyTpl(
+      this.templatePath("YObjClass.js"),
       this.destinationPath(defNameUpper + "ObjClass" + ".js"),
       { name: defaultName, nameUpper: defNameUpper }
     );
