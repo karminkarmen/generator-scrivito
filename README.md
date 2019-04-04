@@ -1,4 +1,4 @@
-# scrivito objects/widgets
+# scrivito objects/widgets generator
 
 1. Install yeoman: http://yeoman.io/learning/index.html
 2. Run in scrivito example app project command `yo scrivito`
