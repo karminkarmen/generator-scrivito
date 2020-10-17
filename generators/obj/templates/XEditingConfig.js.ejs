@@ -4,7 +4,7 @@ import SectionWidget from "../../Widgets/SectionWidget/SectionWidgetClass";
 import {
   metadataEditingConfigAttributes,
   metadataInitialContent,
-  metadataPropertiesGroup,
+  metadataPropertiesGroups,
 } from "../_metadataEditingConfig";
 
 Scrivito.provideEditingConfig("<%= objClassName %>", {
@@ -17,7 +17,7 @@ Scrivito.provideEditingConfig("<%= objClassName %>", {
     },
   },
   properties: ["title"],
-  propertiesGroups: [metadataPropertiesGroup],
+  propertiesGroups: [metadataPropertiesGroups],
   initialContent: {
     body: [
       new SectionWidget({
